@@ -1,10 +1,8 @@
-var Dispatch = require('./lib/dispatch');
 var Board = require('./lib/board');
 var chalk = require('chalk');
 var spawn = require('child_process').spawn;
 
-var dispatch = new Dispatch();
-var board = new Board(dispatch);
+var board = new Board();
 
 var modules = [
     {
