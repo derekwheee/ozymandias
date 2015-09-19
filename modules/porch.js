@@ -1,3 +1,5 @@
+#!/bin/env node
+
 var five = require("johnny-five");
 var Particle = require("particle-io");
 var Dispatch = require('../lib/dispatch');
@@ -17,15 +19,25 @@ var board = new five.Board(params);
 
 board.on("ready", function() {
 
-    console.log('ready');
+    process.send('ready');
 
     var button = new five.Button('D5');
+    var doorbell = {
+        lastText: null
+    };
 
     button.on('up', function () {
 
-        dispatch.send('doorbell');
-        dispatch.text('Someone is at the door.');
+        dispatch.send('porch', 'doorbell');
 
-    };
+        if (doorbell.lastText < (Date.now() - 60000)) {
+            dispatch.text('Someone is at the door.', function (err, message) {
+                if (!err) {
+                    doorbell.lastText = Date.now();
+                }
+            });
+        }
+
+    });
 
 });
